@@ -1,8 +1,12 @@
-const employees = require('../model/employeeModel')
+const employeeService=require('../service/employeeService')
+
 
 const {successResponse,errorResponse} = require('../utils/responseUtil')
 
 exports.getEmployees=(req,res)=>{
+
+    const employees=employeeService.getEmployees();
+
     successResponse(res,200,"Employees Fetched successfully",employees)
 }
 
@@ -10,8 +14,9 @@ exports.getEmployees=(req,res)=>{
 exports.getEmployeeId=(req,res)=>{
     const id = Number(req.params.id);
 
-    const employee=employees.find(emp => emp.id === id)
+    const employee = employeeService.getEmployeeById(id); 
 
+    // why shoudl service layer not receive req, res?
 
     if(!employee){
         return errorResponse(res,404,"Employee not Found")
@@ -23,50 +28,47 @@ exports.getEmployeeId=(req,res)=>{
 }
 
 exports.createEmployee=(req,res)=>{
-    const employee=req.body;//employee -> data {}
-
-    employee.id = employees.length+1; // id 
-
-    employees.push(employee);
-
-    successResponse(res,201,"Employee Created Successfully",employee)
-
-
+    let data = req.body;
+    try{
+        const employee = employeeService.createEmployee(data)
+        successResponse(res,201,"Employee Created Successfully",employee)
+    }
+    catch(error){
+        return errorResponse(res,409,error.message)
+    }
 }
 
 exports.updateEmployee = (req,res)=>{
+    try{
     const id=Number(req.params.id);
+    const data=req.body
 
+    
+        const employee=employeeService.updateEmployee(id,data);
 
-    const index=employees.findIndex(emp => emp.id===id)
+        successResponse(res,200,"Employee Updated Successfully",employee)
 
-
-    if(index === -1){
-        return errorResponse(res,404,"Employee not found for id "+id)
     }
-    else{
-        employees[index]={
-        id,
-        ...req.body
+    catch(error){
+        return errorResponse(res,404,error.message)
     }
-    successResponse(res,200,"Employee Updated Successfully with id " + id)
-    }
-
+    
 
 }
 
 exports.patchEmployee = (req,res) =>{
-    const id=Number(req.params.id);
+    try{
+        const id=Number(req.params.id);
+        const data=req.body
 
-    const employee=employees.find(emp => emp.id === id)
+    
+        const employee=employeeService.patchEmployee(id,data);
 
+        successResponse(res,200,"Employee Updated Successfully",employee)
 
-    if(!employee){
-        return errorResponse(res,404,"Employee not Found")
     }
-    else{
-        Object.assign(employee,req.body)
-        successResponse(res,200,"Employee Fetched with id success",employee);
+    catch(error){
+        return errorResponse(res,404,error.message)
     }
      
 }
