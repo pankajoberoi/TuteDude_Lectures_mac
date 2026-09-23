@@ -11,10 +11,10 @@ exports.getEmployees=(req,res)=>{
 }
 
 
-exports.getEmployeeId=(req,res)=>{
+exports.getEmployeeId= async (req,res)=>{
     const id = Number(req.params.id);
 
-    const employee = employeeService.getEmployeeById(id); 
+    const employee = await employeeService.getEmployeeById(id); 
 
     // why shoudl service layer not receive req, res?
 
@@ -27,10 +27,10 @@ exports.getEmployeeId=(req,res)=>{
 
 }
 
-exports.createEmployee=(req,res)=>{
+exports.createEmployee=async (req,res)=>{
     let data = req.body;
     try{
-        const employee = employeeService.createEmployee(data)
+        const employee = await employeeService.createEmployee(data)
         successResponse(res,201,"Employee Created Successfully",employee)
     }
     catch(error){
@@ -73,7 +73,7 @@ exports.patchEmployee = (req,res) =>{
      
 }
 
-exports.deleteEmployee=(req,res)=>{
+exports.deleteEmployee=(req,res)=>{ // HW -> shift this logic to service layer
     const id=Number(req.params.id);
 
 

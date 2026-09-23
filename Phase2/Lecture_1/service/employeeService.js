@@ -5,20 +5,21 @@ exports.getEmployees = () =>{
     return employees;
 }
 
-exports.getEmployeeById=(id)=>{
-     return employees.find(emp => emp.id === id)
+exports.getEmployeeById= async (id)=>{
+    const employee= await employees.find(emp => emp.id === id)
+    return employee;
 }
 
 
 
-exports.createEmployee = (newEmployeeData) => {
+exports.createEmployee = async (newEmployeeData) => {
 
 
     if(!allowedDepartments.includes(newEmployeeData.department)){
         throw new Error("Invalid department")
     }
 
-    const existingEmployee=employees.find(emp => emp.email === newEmployeeData.email)
+    const existingEmployee=await employees.find(emp => emp.email === newEmployeeData.email)
 
     if(existingEmployee){
         throw new Error("Employee Email already exits");
