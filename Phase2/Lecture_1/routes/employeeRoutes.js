@@ -1,24 +1,34 @@
-const express=require("express")
+const express = require("express");
 
-const router=express.Router();
+const router = express.Router();
 
+const {
+  createEmployeeValidator,
+  employeeIdValidator,
+  employeeListValidator,
+} = require("../validators/employeeValidator");
 
-const {getEmployeeId,getEmployees,createEmployee,updateEmployee,patchEmployee,deleteEmployee}=require("../controllers/employeeController");
+const validate = require("../Middleware/validationMiddleware");
 
+const {
+  getEmployeeId,
+  getEmployees,
+  createEmployee,
+  updateEmployee,
+  patchEmployee,
+  deleteEmployee,
+} = require("../controllers/employeeController");
 
-router.get("/",getEmployees);
+router.get("/", employeeListValidator, validate, getEmployees);
 
-router.get("/:id",getEmployeeId);
+router.get("/:id", employeeIdValidator, validate, getEmployeeId);
 
-router.post("/",createEmployee);
+router.post("/", createEmployeeValidator, validate, createEmployee); // -> req.body -> playload
 
-router.put("/:id",updateEmployee);
+router.put("/:id", employeeIdValidator, validate, updateEmployee);
 
-router.patch("/:id",patchEmployee);
+router.patch("/:id", employeeIdValidator, validate, patchEmployee);
 
-router.delete("/:id",deleteEmployee);
+router.delete("/:id", employeeIdValidator, validate, deleteEmployee);
 
-
-module.exports=router;
-
-
+module.exports = router;
